@@ -1,0 +1,9 @@
+{
+  "name": "Beauty Match Beta",
+  "short_name": "Beauty Match",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fbf6f2",
+  "theme_color": "#7a4058",
+  "description": "Personalized skincare and makeup recommendations."
+}
