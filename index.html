@@ -1818,11 +1818,36 @@ function getOptions(p){
   const cats=categoriesFor(p);
   const out={};
   const optionLimit=p.routineSize==="full" ? 6 : p.routineSize==="balanced" ? 4 : 3;
+
   cats.forEach(cat=>{
-    out[cat]=products.filter(x=>x.category===cat)
+    const ranked=products.filter(x=>x.category===cat)
       .map(x=>({prod:x,score:score(x,p)}))
       .sort((a,b)=>b.score-a.score || a.prod.price-b.prod.price)
-      .slice(0,optionLimit).map(x=>x.prod);
+      .map(x=>x.prod);
+
+    // Brand diversity first: show the strongest match from different brands
+    // before allowing a second product from the same brand.
+    const chosen=[];
+    const seenBrands=new Set();
+
+    for(const prod of ranked){
+      const key=(prod.brand||"").trim().toLowerCase();
+      if(!seenBrands.has(key)){
+        chosen.push(prod);
+        seenBrands.add(key);
+        if(chosen.length>=optionLimit) break;
+      }
+    }
+
+    if(chosen.length<optionLimit){
+      for(const prod of ranked){
+        if(chosen.some(x=>x.id===prod.id)) continue;
+        chosen.push(prod);
+        if(chosen.length>=optionLimit) break;
+      }
+    }
+
+    out[cat]=chosen;
   });
   return out;
 }
@@ -1937,7 +1962,7 @@ function renderProducts(p){
     block.className="category-block";
     block.innerHTML=`
       <div class="category-head">
-        <div><h3>${cat}</h3><p>Choose one — ${arr.length} matched option${arr.length===1?"":"s"}</p></div>
+        <div><h3>${cat}</h3><p>Choose one — ${arr.length} matched option${arr.length===1?"":"s"} • different brands prioritized</p></div>
       </div>
       <div class="product-row">
         ${arr.map((prod,i)=>{
