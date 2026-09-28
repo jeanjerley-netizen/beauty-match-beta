@@ -580,6 +580,93 @@ window.BEAUTY_MATCH_BETA_PRODUCTS = [
     "note": "Simple cleanser option when sensitivity is a priority."
   },
   {
+    "id": "cetaphil-daily-cleanser",
+    "brand": "Cetaphil",
+    "category": "Cleanser",
+    "name": "Daily Facial Cleanser",
+    "price": 8.99,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "sensitivity",
+      "texture",
+      "breakouts"
+    ],
+    "tags": [
+      "sensitive-skin",
+      "oil-control",
+      "budget-pick"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-83019458",
+    "image": "https://target.scene7.com/is/image/Target/GUEST_e42c7e5a-534e-4e67-b52d-3d6bb561b857?fmt=pjpeg&hei=600&wid=600",
+    "note": "Affordable daily cleanser for normal-to-oily and combination skin."
+  },
+  {
+    "id": "neutrogena-hydro-boost-cleanser",
+    "brand": "Neutrogena",
+    "category": "Cleanser",
+    "name": "Hydro Boost Hydrating Facial Cleanser",
+    "price": 11.99,
+    "skins": [
+      "dry",
+      "balanced",
+      "combination"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "fragrance-free",
+      "sensitive-skin",
+      "hydrating"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-94597080",
+    "image": "https://target.scene7.com/is/image/Target/GUEST_b95b1d49-d935-4d3c-bac7-459519600a0c?fmt=pjpeg&hei=600&wid=600",
+    "note": "Fragrance-free hydrating gel cleanser with hyaluronic acid."
+  },
+  {
+    "id": "cerave-acne-control-cleanser",
+    "brand": "CeraVe",
+    "category": "Cleanser",
+    "name": "Acne Control Cleanser",
+    "price": 14.29,
+    "skins": [
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "breakouts",
+      "texture"
+    ],
+    "tags": [
+      "fragrance-free",
+      "oil-control",
+      "salicylic-acid"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-82403938",
+    "image": "https://target.scene7.com/is/image/Target/GUEST_dca8437a-828f-479c-b50a-7338a57494bc?fmt=pjpeg&hei=600&wid=600",
+    "note": "Salicylic-acid cleanser option for oily, combination and breakout-prone skin."
+  },
+  {
     "id": "ordinary-niacinamide",
     "brand": "The Ordinary",
     "category": "Serum",
@@ -1730,11 +1817,12 @@ function score(prod,p){
 function getOptions(p){
   const cats=categoriesFor(p);
   const out={};
+  const optionLimit=p.routineSize==="full" ? 6 : p.routineSize==="balanced" ? 4 : 3;
   cats.forEach(cat=>{
     out[cat]=products.filter(x=>x.category===cat)
       .map(x=>({prod:x,score:score(x,p)}))
       .sort((a,b)=>b.score-a.score || a.prod.price-b.prod.price)
-      .slice(0,3).map(x=>x.prod);
+      .slice(0,optionLimit).map(x=>x.prod);
   });
   return out;
 }
@@ -1932,8 +2020,9 @@ function renderResults(p){
   chooseDefaults(p,currentOptions);
 
   quizPanel.classList.add("hidden");hero.classList.add("hidden");results.classList.remove("hidden");
+  const sizeLabel=p.routineSize==="full"?"More options":p.routineSize==="balanced"?"Balanced":"Simple";
   document.getElementById("profileLine").textContent=
-    `${cap(p.routineTime)} • ${cap(p.routineSize)} • ${cap(p.skinType)} skin • ${cap(p.tone)} tone • ${cap(p.undertone)} undertone`;
+    `${cap(p.routineTime)} • ${sizeLabel} • ${cap(p.skinType)} skin • ${cap(p.tone)} tone • ${cap(p.undertone)} undertone`;
   document.getElementById("routineGuide").innerHTML=`<strong>Suggested order</strong><p>${routineGuide(p)}</p>`;
   renderProducts(p);updateTotal();
   window.scrollTo({top:0,behavior:"smooth"});
