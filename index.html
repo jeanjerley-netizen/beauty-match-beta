@@ -454,7 +454,7 @@ select{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;b
 <section class="panel hidden" id="results">
   <div class="results-head">
     <div>
-      <div class="kicker">Your Beauty Match Beta Edit</div>
+      <div class="kicker">Your Beauty Match Beta Results</div>
       <h2>Choose your favorites.</h2>
       <div class="profile" id="profileLine"></div>
     </div>
@@ -2404,7 +2404,7 @@ function resultsText(){
   if(!currentProfile)return "";
   const p=currentProfile;
   const list=selectedProducts().map(x=>`${x.category}: ${x.brand} ${x.name} — $${x.price.toFixed(2)} — ${x.url}`);
-  return `My Beauty Match Beta Edit
+  return `My Beauty Match Beta Results
 Routine: ${cap(p.routineTime)} / ${cap(p.routineSize)}
 Skin: ${cap(p.skinType)}
 Complexion: ${cap(p.tone)} / ${cap(p.undertone)}
@@ -2502,7 +2502,7 @@ document.getElementById("textBtn").onclick=()=>{
 };
 document.getElementById("shareBtn").onclick=async()=>{
   if(navigator.share){
-    try{await navigator.share({title:"My Beauty Match Beta Edit",text:resultsText()})}
+    try{await navigator.share({title:"My Beauty Match Beta Results",text:resultsText()})}
     catch(e){}
   }else{
     try{await navigator.clipboard.writeText(resultsText());document.getElementById("resultMsg").textContent="Sharing isn't available here, so the list was copied instead."}
