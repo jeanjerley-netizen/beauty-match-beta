@@ -4041,16 +4041,69 @@ function restoreOwned(){
 function resultsText(){
   if(!currentProfile)return "";
   const p=currentProfile;
-  const list=selectedProducts().map(x=>`${x.category}: ${x.brand} ${x.name} — $${x.price.toFixed(2)} — ${x.url}`);
+  const list=selectedProducts().map(x=>`${x.category}: ${x.brand} ${x.name} — ${x.price.toFixed(2)} — ${x.url}`);
   return `My Beauty Match Beta Results
 Routine: ${cap(p.routineTime)} / ${cap(p.routineSize)}
 Skin: ${cap(p.skinType)}
 Complexion: ${cap(p.tone)} / ${cap(p.undertone)}
-Selected total: $${totalSelected().toFixed(2)}
+Selected total: ${totalSelected().toFixed(2)}
 
 ${list.join("\n")}
 
+Return to Beauty Match Beta:
+https://beauty-match-beta.vercel.app/
+
 Product prices and availability can change. Verify exact shades and current ingredients before purchase.`;
+}
+
+function emailText(){
+  if(!currentProfile)return "";
+  const p=currentProfile;
+  const selected=selectedProducts();
+  const total=totalSelected();
+  const sizeLabel=p.routineSize==="full"?"More options":p.routineSize==="balanced"?"Balanced":"Simple";
+  const budgetLine=p.budget>=999
+    ? "Budget: No set limit"
+    : `Budget: ${p.budget.toFixed(0)} • ${Math.max(0,p.budget-total).toFixed(2)} left`;
+
+  const picks=selected.map((x,i)=>`
+${i+1}. ${x.category.toUpperCase()}
+${x.brand} — ${x.name}
+${x.price.toFixed(2)}
+Shop: ${x.url}`).join("\n");
+
+  return `✨ BEAUTY MATCH BETA
+Personalized skincare & makeup recommendations
+
+Your beauty match is ready.
+
+━━━━━━━━━━━━━━━━━━━━
+YOUR BEAUTY PROFILE
+━━━━━━━━━━━━━━━━━━━━
+Routine: ${cap(p.routineTime)} / ${sizeLabel}
+Skin: ${cap(p.skinType)}
+Complexion: ${cap(p.tone)} / ${cap(p.undertone)}
+Selected total: ${total.toFixed(2)}
+${budgetLine}
+
+━━━━━━━━━━━━━━━━━━━━
+YOUR SELECTED PICKS
+━━━━━━━━━━━━━━━━━━━━
+${picks || "No products selected yet."}
+
+━━━━━━━━━━━━━━━━━━━━
+KEEP EXPLORING
+━━━━━━━━━━━━━━━━━━━━
+Want to compare more products, swap a pick, or build a different routine?
+
+Return to Beauty Match Beta:
+https://beauty-match-beta.vercel.app/
+
+You can come back anytime to explore more options and update your routine.
+
+Thanks for trying Beauty Match Beta.
+
+Prices and availability can change. Verify exact shades, ingredients, and product details with the retailer before purchasing.`;
 }
 function applyProfile(p){
   form.reset();
@@ -4130,8 +4183,8 @@ document.getElementById("loadBtn").onclick=()=>{
   }catch(e){}
 };
 document.getElementById("emailBtn").onclick=()=>{
-  const subject=encodeURIComponent("My Beauty Match Beta beauty routine");
-  const body=encodeURIComponent(resultsText());
+  const subject=encodeURIComponent("Your Beauty Match Beta routine is ready ✨");
+  const body=encodeURIComponent(emailText());
   location.href=`mailto:?subject=${subject}&body=${body}`;
 };
 document.getElementById("textBtn").onclick=()=>{
