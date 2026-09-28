@@ -1,0 +1,2078 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7a4058">
+<title>Beauty Match Beta — Personalized skincare & makeup recommendations.</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --cream:#fbf6f2;
+  --paper:#fffdfb;
+  --ink:#2f252a;
+  --muted:#776b70;
+  --berry:#7a4058;
+  --berry2:#5e2e42;
+  --rose:#edd5dc;
+  --rose2:#f8ebef;
+  --gold:#c8a56d;
+  --line:#e9dfe2;
+  --green:#3f7059;
+  --shadow:0 18px 50px rgba(76,38,55,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 96% 0%,rgba(237,213,220,.7),transparent 27%),
+    var(--cream);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.shell{max-width:1080px;margin:0 auto;padding:15px 16px 70px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0 18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850}
+.logo{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:var(--berry);font-family:Georgia,serif;font-size:21px
+}
+.brand small{display:block;color:var(--muted);font-size:10px;font-weight:550;text-transform:uppercase;letter-spacing:.1em}
+.ghost,.btn{
+  border:0;border-radius:999px;padding:13px 18px;font-weight:850;
+  transition:transform .15s ease,background .15s ease
+}
+.ghost{background:#fff;border:1px solid var(--line);padding:10px 14px}
+.btn:hover,.ghost:hover{transform:translateY(-1px)}
+.primary{background:var(--berry);color:#fff}
+.primary:hover{background:var(--berry2)}
+.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}
+
+.hero{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:26px;
+  padding:44px 40px;border-radius:30px;background:rgba(255,253,251,.95);
+  border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;position:relative
+}
+.hero:after{
+  content:"";position:absolute;width:270px;height:270px;border-radius:50%;
+  background:linear-gradient(145deg,var(--rose),#f6e9df);right:-80px;top:-100px;opacity:.85
+}
+.copy,.hero-card{position:relative;z-index:1}
+.kicker{
+  color:var(--berry);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:900
+}
+h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:500}
+h1{
+  font-size:clamp(44px,7.5vw,76px);letter-spacing:-2.4px;line-height:.95;
+  margin:12px 0 17px;max-width:730px
+}
+.copy>p{font-size:18px;line-height:1.62;color:var(--muted);max-width:680px;margin:0}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:23px}
+.micro{font-size:12px!important;margin-top:12px!important}
+.hero-card{
+  align-self:center;background:#fff;border:1px solid var(--line);
+  border-radius:22px;padding:20px;box-shadow:0 18px 45px rgba(65,32,47,.08)
+}
+.hero-card h3{font-family:Georgia,serif;font-weight:500;font-size:25px;margin:5px 0 13px}
+.example{display:grid;gap:8px}
+.example div{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--line);padding:10px 11px;border-radius:12px;font-size:12px}
+.example span:last-child{color:var(--muted)}
+.hero-tip{margin-top:13px;background:var(--rose2);border-radius:12px;padding:11px;font-size:12px;color:#6c5861;line-height:1.5}
+
+.panel{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:var(--shadow)}
+.hidden{display:none!important}
+.progress-head{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);margin-bottom:8px}
+.track{height:7px;background:#efe7e9;border-radius:999px;overflow:hidden}
+.bar{height:100%;background:linear-gradient(90deg,var(--berry),#af7188);width:20%;transition:width .2s ease}
+.step{display:none;padding-top:27px}
+.step.active{display:block}
+.step h2{font-size:36px;letter-spacing:-1px;margin:0 0 8px}
+.lead{color:var(--muted);line-height:1.55;margin:0 0 24px}
+.question{margin:25px 0}
+.qtitle{font-size:15px;font-weight:850;margin-bottom:9px}
+.definition{font-size:12px;color:var(--muted);line-height:1.45;margin:-2px 0 10px}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.choice input{display:none}
+.choice label{display:block;border:1px solid var(--line);border-radius:14px;background:#fff;padding:13px 14px;min-height:49px}
+.choice input:checked + label{border-color:var(--berry);background:var(--rose2);box-shadow:inset 0 0 0 1px var(--berry)}
+select{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;color:var(--ink)}
+.tip{border-left:3px solid var(--gold);background:#f9f2ee;border-radius:0 12px 12px 0;padding:11px 13px;color:#685d61;font-size:12px;line-height:1.5}
+.nav{display:flex;justify-content:space-between;gap:9px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.nav .btn{min-width:125px}
+
+.results-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap}
+.results-head h2{font-size:40px;margin:3px 0 7px}
+.profile{color:var(--muted);font-size:13px}
+.total{background:var(--berry);color:#fff;border-radius:18px;padding:14px 17px;min-width:160px}
+.total small{display:block;opacity:.75;margin-bottom:3px}
+.total strong{font-size:25px}
+.budget-msg{font-size:11px;margin-top:5px;opacity:.85}
+
+.routine-guide{
+  margin-top:20px;border:1px solid #ead8de;background:var(--rose2);
+  border-radius:16px;padding:14px 15px
+}
+.routine-guide strong{font-size:13px}
+.routine-guide p{font-size:12px;color:#685a60;line-height:1.55;margin:5px 0 0}
+.section-label{margin:28px 0 12px;font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.11em}
+
+.category-block{margin:0 0 26px}
+.category-head{display:flex;justify-content:space-between;gap:14px;align-items:end;margin-bottom:10px}
+.category-head h3{margin:0;font-size:20px}
+.category-head p{margin:0;color:var(--muted);font-size:11px}
+.product-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.product{
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:13px;display:flex;flex-direction:column;min-height:420px;transition:.15s ease
+}
+.product.selected{border-color:var(--berry);box-shadow:0 10px 28px rgba(122,64,88,.12)}
+.best{
+  position:absolute;top:10px;left:10px;background:var(--berry);color:#fff;border-radius:999px;
+  padding:5px 8px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;z-index:2
+}
+.imgwrap{
+  height:165px;border-radius:13px;background:#faf7f5;border:1px solid #f0e9e6;
+  display:grid;place-items:center;overflow:hidden;margin-bottom:12px
+}
+.imgwrap img{width:100%;height:100%;object-fit:contain;background:#fff;padding:10px}
+.imgfallback{font-family:Georgia,serif;font-size:36px;color:#b89aa6}
+.product-top{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.category{font-size:9px;color:var(--berry);font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+.price{font-weight:900;font-size:13px}
+.brandname{font-size:11px;color:var(--muted);margin-top:8px}
+.product h4{font-size:15px;margin:3px 0 7px;line-height:1.25}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:9px;border-radius:999px;padding:4px 6px;background:#f8f3f2;border:1px solid #eee5e3;color:#6e6266}
+.why{font-size:11px;color:#665a5f;line-height:1.45;padding-top:9px;margin-top:auto;border-top:1px solid var(--line)}
+.shade{font-size:10px;color:#705c65;line-height:1.42;background:#fbf3f6;border-radius:10px;padding:8px;margin:8px 0}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.select-btn,.shop,.own{
+  border-radius:999px;padding:8px 10px;font-size:10px;font-weight:850;text-decoration:none;border:0
+}
+.select-btn{background:var(--berry);color:#fff}
+.select-btn.chosen{background:var(--green)}
+.shop{background:#fff;border:1px solid var(--line)}
+.own{background:#fff;border:1px solid var(--line)}
+.own.active{background:#eef6f1;color:var(--green);border-color:#c7dbcf}
+.source{font-size:8px;color:#9b8f93;line-height:1.35;margin-top:8px}
+
+.save-box{margin-top:25px;border-top:1px solid var(--line);padding-top:20px}
+.save-box h3{font-size:20px;margin:0 0 5px}
+.save-box p{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 13px}
+.save-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.save-btn{
+  border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;
+  font-size:12px;font-weight:850;text-align:center
+}
+.save-btn.primarysave{background:var(--berry);color:#fff;border-color:var(--berry)}
+.msg{font-size:12px;color:var(--green);font-weight:800;margin-top:10px;min-height:17px}
+.disclaimer{font-size:10px;color:var(--muted);line-height:1.55;margin-top:16px}
+
+@media(max-width:840px){
+  .hero{grid-template-columns:1fr;padding:29px 21px}
+  .hero-card{display:none}
+  .product-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .shell{padding:11px 11px 55px}
+  .hero{border-radius:23px}
+  h1{font-size:49px;letter-spacing:-1.8px}
+  .panel{padding:17px}
+  .options,.product-row,.save-grid{grid-template-columns:1fr}
+  .step h2{font-size:31px}
+  .product{min-height:auto}
+  .imgwrap{height:190px}
+  .nav{
+    position:sticky;bottom:8px;background:rgba(255,253,251,.96);
+    border:1px solid var(--line);border-radius:16px;padding:9px;
+    box-shadow:0 10px 28px rgba(0,0,0,.08)
+  }
+  .nav .btn{flex:1;min-width:0}
+}
+
+.focus-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.focus-panel{border:1px solid var(--line);background:#fcfaf9;border-radius:16px;padding:14px}
+.focus-panel h4{margin:0 0 4px;font-size:14px}
+.focus-panel .hint{margin:0 0 10px;font-size:11px;color:var(--muted);line-height:1.4}
+.focus-panel .options{grid-template-columns:1fr}
+.focus-panel.hidden{display:none!important}
+.choice label small{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:3px;line-height:1.35}
+.verified{
+  display:inline-flex;align-items:center;gap:5px;margin-top:6px;
+  font-size:9px;font-weight:850;color:var(--green)
+}
+.verified::before{content:"✓";width:14px;height:14px;border-radius:50%;display:grid;place-items:center;background:#eaf4ee}
+@media(max-width:620px){.focus-panels{grid-template-columns:1fr}}
+
+
+.link-health{
+  margin-top:8px;padding:7px 8px;border-radius:10px;font-size:9px;font-weight:800;line-height:1.35
+}
+.link-health.ok{background:#edf6f0;color:#37644f}
+.link-health.warn{background:#fbf3df;color:#775f22}
+.link-health.bad{background:#fae8e9;color:#7a3037}
+.link-health.neutral{background:#f4f1f2;color:#766a6f}
+.admin-link{font-size:10px;color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="topbar">
+  <div class="brand"><div class="logo">W</div><div>Beauty Match Beta<small>Personalized skincare & makeup recommendations.</small></div></div>
+  <button class="ghost" id="resetTop">Start over</button>
+</header>
+
+<section class="hero" id="hero">
+  <div class="copy">
+    <div class="kicker">Personal beauty shopping</div>
+    <h1>Build a routine you’ll actually use.</h1>
+    <p>Beauty Match Beta helps you choose exactly what you want help with — skincare, eye care, face makeup, eye makeup, brows, lips or a full routine — then shows several matched choices instead of one “perfect” product.</p>
+    <div class="actions">
+      <button class="btn primary" id="startBtn">Build my beauty match →</button>
+      <button class="btn secondary" id="loadBtn">Open saved results</button>
+    </div>
+    <p class="micro">About one minute • No account needed for this prototype</p>
+    <div class="msg" id="homeMsg"></div>
+  </div>
+  <aside class="hero-card">
+    <div class="kicker">What’s different</div>
+    <h3>You stay in control.</h3>
+    <div class="example">
+      <div><span>Routine</span><span>Morning / night / both</span></div>
+      <div><span>Interests</span><span>Eye care / eyes / face / lips</span></div>
+      <div><span>Budget</span><span>Live selected total</span></div>
+      <div><span>Save</span><span>Email / text / download</span></div>
+    </div>
+    <div class="hero-tip">Beauty Match Beta should help you compare, swap and save — not force you into three products.</div>
+  </aside>
+</section>
+
+<section class="panel hidden" id="quizPanel">
+  <div class="progress-head"><span id="stepCount">1 of 5</span><span id="stepName">Goal</span></div>
+  <div class="track"><div class="bar" id="bar"></div></div>
+
+  <form id="beautyForm">
+    <section class="step active" data-step="1">
+      <h2>What are you looking for?</h2>
+      <p class="lead">Start broad, then pick only the areas you care about. Beauty Match Beta will hide the rest.</p>
+
+      <div class="question">
+        <div class="qtitle">Choose one</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="mode" id="mode1" value="skincare"><label for="mode1">Skincare<small>Face care, eye care, treatments and SPF</small></label></div>
+          <div class="choice"><input type="radio" name="mode" id="mode2" value="makeup"><label for="mode2">Makeup<small>Face, eyes, brows and lips</small></label></div>
+          <div class="choice"><input type="radio" name="mode" id="mode3" value="both"><label for="mode3">Both<small>Build skincare + makeup together</small></label></div>
+          <div class="choice"><input type="radio" name="mode" id="mode4" value="unsure"><label for="mode4">Help me choose<small>Show simple starter options from both</small></label></div>
+        </div>
+      </div>
+
+      <div class="question hidden" id="focusQuestion">
+        <div class="qtitle">What parts are you interested in?</div>
+        <div class="definition">Choose as many as you want. “Full routine/look” is easiest if you want Beauty Match Beta to decide the steps.</div>
+        <div class="focus-panels">
+          <div class="focus-panel hidden" id="skinFocus">
+            <h4>Skincare</h4>
+            <p class="hint">Choose specific steps, eye care, or let Beauty Match Beta build the whole routine.</p>
+            <div class="options">
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf0" value="full"><label for="sf0">Full skincare routine</label></div>
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf1" value="eye-care"><label for="sf1">Eye cream / under-eye care</label></div>
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf2" value="cleanser"><label for="sf2">Cleanser</label></div>
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf3" value="treatments"><label for="sf3">Serums / treatments</label></div>
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf4" value="moisturizer"><label for="sf4">Moisturizer</label></div>
+              <div class="choice"><input type="checkbox" name="skinFocus" id="sf5" value="spf"><label for="sf5">Sunscreen / SPF</label></div>
+            </div>
+          </div>
+
+          <div class="focus-panel hidden" id="makeupFocus">
+            <h4>Makeup</h4>
+            <p class="hint">Choose a whole look or only the areas you want help shopping for.</p>
+            <div class="options">
+              <div class="choice"><input type="checkbox" name="makeupFocus" id="mf0" value="full"><label for="mf0">Full makeup look</label></div>
+              <div class="choice"><input type="checkbox" name="makeupFocus" id="mf1" value="face"><label for="mf1">Face makeup<small>Primer, foundation/tint, concealer, powder, blush</small></label></div>
+              <div class="choice"><input type="checkbox" name="makeupFocus" id="mf2" value="eyes"><label for="mf2">Eye makeup<small>Eyeshadow, eyeliner and mascara</small></label></div>
+              <div class="choice"><input type="checkbox" name="makeupFocus" id="mf3" value="brows"><label for="mf3">Brows</label></div>
+              <div class="choice"><input type="checkbox" name="makeupFocus" id="mf4" value="lips"><label for="mf4">Lips</label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">When do you need it?</div>
+        <div class="definition">This changes skincare order and whether SPF is included.</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="routineTime" id="time1" value="morning"><label for="time1">Morning / daytime</label></div>
+          <div class="choice"><input type="radio" name="routineTime" id="time2" value="night"><label for="time2">Night / evening</label></div>
+          <div class="choice"><input type="radio" name="routineTime" id="time3" value="both"><label for="time3">Both</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">How much detail do you want?</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="routineSize" id="rs1" value="essentials"><label for="rs1">Simple<small>Only the main steps</small></label></div>
+          <div class="choice"><input type="radio" name="routineSize" id="rs2" value="balanced"><label for="rs2">Balanced<small>A useful amount without overload</small></label></div>
+          <div class="choice"><input type="radio" name="routineSize" id="rs3" value="full"><label for="rs3">More options<small>Show more steps and categories</small></label></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <h2>How does your skin behave?</h2>
+      <p class="lead">You do not need to know your skin type. These questions help Beauty Match Beta estimate it.</p>
+
+      <div class="question">
+        <div class="qtitle">About 20 minutes after cleansing, your skin usually feels…</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="afterWash" id="aw1" value="tight"><label for="aw1">Tight or dry</label></div>
+          <div class="choice"><input type="radio" name="afterWash" id="aw2" value="comfortable"><label for="aw2">Comfortable</label></div>
+          <div class="choice"><input type="radio" name="afterWash" id="aw3" value="shiny"><label for="aw3">Shiny or slick</label></div>
+          <div class="choice"><input type="radio" name="afterWash" id="aw4" value="mixed"><label for="aw4">Dry in some areas, oily in others</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">By the middle of the day, your face is usually…</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="midday" id="md1" value="dry"><label for="md1">Still dry</label></div>
+          <div class="choice"><input type="radio" name="midday" id="md2" value="balanced"><label for="md2">Mostly balanced</label></div>
+          <div class="choice"><input type="radio" name="midday" id="md3" value="oily"><label for="md3">Oily in most areas</label></div>
+          <div class="choice"><input type="radio" name="midday" id="md4" value="tzone"><label for="md4">Mostly oily through my T-zone</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">What would you most like to improve?</div>
+        <div class="options">
+          <div class="choice"><input type="checkbox" name="concerns" id="c1" value="breakouts"><label for="c1">Breakouts</label></div>
+          <div class="choice"><input type="checkbox" name="concerns" id="c2" value="dark-spots"><label for="c2">Dark spots</label></div>
+          <div class="choice"><input type="checkbox" name="concerns" id="c3" value="dryness"><label for="c3">Dryness</label></div>
+          <div class="choice"><input type="checkbox" name="concerns" id="c4" value="texture"><label for="c4">Texture</label></div>
+          <div class="choice"><input type="checkbox" name="concerns" id="c5" value="sensitivity"><label for="c5">Sensitivity</label></div>
+          <div class="choice"><input type="checkbox" name="concerns" id="c6" value="uneven-tone"><label for="c6">Uneven tone</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">Preferences</div>
+        <div class="options">
+          <div class="choice"><input type="checkbox" name="preferences" id="p1" value="fragrance-free"><label for="p1">Prefer fragrance-free</label></div>
+          <div class="choice"><input type="checkbox" name="preferences" id="p2" value="sensitive-friendly"><label for="p2">Prioritize sensitive-skin options</label></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="3">
+      <h2>Your complexion.</h2>
+      <p class="lead">Beauty Match Beta uses this for makeup color direction, but exact foundation shades should still be checked on the brand’s current shade guide.</p>
+
+      <div class="question">
+        <div class="qtitle">Skin tone</div>
+        <div class="definition">The visible depth of your complexion.</div>
+        <select name="tone" required>
+          <option value="">Choose one</option>
+          <option value="fair">Fair</option>
+          <option value="light">Light</option>
+          <option value="medium">Medium</option>
+          <option value="tan">Tan</option>
+          <option value="deep">Deep</option>
+          <option value="rich-deep">Rich / Deep</option>
+        </select>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">Undertone</div>
+        <div class="definition">The subtle hue underneath your skin.</div>
+        <div class="options">
+          <div class="choice"><input required type="radio" name="undertone" id="u1" value="cool"><label for="u1">Cool</label></div>
+          <div class="choice"><input type="radio" name="undertone" id="u2" value="warm"><label for="u2">Warm</label></div>
+          <div class="choice"><input type="radio" name="undertone" id="u3" value="neutral"><label for="u3">Neutral</label></div>
+          <div class="choice"><input type="radio" name="undertone" id="u4" value="olive"><label for="u4">Olive</label></div>
+          <div class="choice"><input type="radio" name="undertone" id="u5" value="unsure"><label for="u5">Not sure</label></div>
+        </div>
+      </div>
+      <div class="tip"><strong>Tip:</strong> “Not sure” is better than guessing. Beauty Match Beta should never pretend an online quiz guarantees your exact shade.</div>
+    </section>
+
+    <section class="step" data-step="4">
+      <h2>Make it feel like you.</h2>
+      <p class="lead">Your recommendations should match how you actually wear beauty products.</p>
+
+      <div class="question" id="makeupFinishQuestion">
+        <div class="qtitle">Preferred makeup finish</div>
+        <div class="options">
+          <div class="choice"><input type="radio" name="finish" id="f1" value="natural" checked><label for="f1">Natural</label></div>
+          <div class="choice"><input type="radio" name="finish" id="f2" value="dewy"><label for="f2">Dewy / glowy</label></div>
+          <div class="choice"><input type="radio" name="finish" id="f3" value="matte"><label for="f3">Soft matte</label></div>
+          <div class="choice"><input type="radio" name="finish" id="f4" value="no-preference"><label for="f4">No preference</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="qtitle">Where do you prefer to shop?</div>
+        <div class="options">
+          <div class="choice"><input type="checkbox" name="retailers" id="r1" value="Target"><label for="r1">Target</label></div>
+          <div class="choice"><input type="checkbox" name="retailers" id="r2" value="Ulta"><label for="r2">Ulta</label></div>
+          <div class="choice"><input type="checkbox" name="retailers" id="r3" value="Sephora"><label for="r3">Sephora</label></div>
+          <div class="choice"><input type="checkbox" name="retailers" id="r4" value="Anywhere"><label for="r4">Anywhere</label></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="5">
+      <h2>Set your shopping limit.</h2>
+      <p class="lead">This is the maximum Beauty Match Beta will aim for with your initially selected products.</p>
+      <div class="question">
+        <div class="qtitle">Total budget</div>
+        <select name="budget" required>
+          <option value="">Choose one</option>
+          <option value="25">$25</option>
+          <option value="50">$50</option>
+          <option value="75">$75</option>
+          <option value="100">$100</option>
+          <option value="150">$150</option>
+          <option value="225">$225</option>
+          <option value="300">$300</option>
+          <option value="999">No set limit</option>
+        </select>
+      </div>
+      <div class="tip"><strong>Tip:</strong> You will still see alternatives. The total changes when you swap products.</div>
+    </section>
+
+    <div class="nav">
+      <button type="button" class="btn secondary" id="backBtn">Back</button>
+      <button type="button" class="btn primary" id="nextBtn">Next →</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel hidden" id="results">
+  <div class="results-head">
+    <div>
+      <div class="kicker">Your Beauty Match Beta Edit</div>
+      <h2>Choose your favorites.</h2>
+      <div class="profile" id="profileLine"></div>
+    </div>
+    <div class="total">
+      <small>Selected total</small>
+      <strong id="totalPrice">$0.00</strong>
+      <div class="budget-msg" id="budgetMsg"></div>
+    </div>
+  </div>
+
+  <div class="routine-guide" id="routineGuide"></div>
+
+  <div class="section-label">Shop your recommendations — swap any product</div>
+  <div id="categoryResults"></div>
+
+  <section class="save-box">
+    <h3>Keep your results</h3>
+    <p>Choose what is easiest. Email and text open your own device apps; Beauty Match Beta does not need to collect your email address or phone number for this prototype.</p>
+    <div class="save-grid">
+      <button class="save-btn primarysave" id="saveLocal">Save in Beauty Match Beta</button>
+      <button class="save-btn" id="emailBtn">Email my results</button>
+      <button class="save-btn" id="textBtn">Text my results</button>
+      <button class="save-btn" id="shareBtn">Share results</button>
+      <button class="save-btn" id="downloadBtn">Download routine</button>
+      <button class="save-btn" id="copyBtn">Copy list</button>
+    </div>
+    <div class="msg" id="resultMsg"></div>
+  </section>
+
+  <div class="disclaimer">
+    Prototype shopping guidance only. Prices and availability can change after the September 7, 2026 checks. Product photos are shown for recognition; packaging can change and some prototype images are sourced from public product listings. Review current ingredient lists and exact shade information on the retailer or brand page before purchase. Beauty Match Beta does not diagnose or treat skin conditions. Shopping links are limited to approved retailer/brand domains and can be monitored for breakage when the site is hosted.
+  </div>
+</section>
+</main>
+
+<script>
+window.BEAUTRES_PRODUCTS = [
+  {
+    "id": "cerave-hydrating",
+    "brand": "CeraVe",
+    "category": "Cleanser",
+    "name": "Hydrating Facial Cleanser",
+    "price": 12.99,
+    "skins": [
+      "dry",
+      "balanced",
+      "combination"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "fragrance-free",
+      "gentle"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-76198439",
+    "image": "https://www.myvitaminstore.pk/cdn/shop/products/CeraVe-Hydrating-Facial-Cleanser--355ml-ed5122d-my-vitamin-store.png?v=1700399494",
+    "note": "Gentle, hydrating choice for normal-to-dry skin."
+  },
+  {
+    "id": "cerave-foaming",
+    "brand": "CeraVe",
+    "category": "Cleanser",
+    "name": "Foaming Facial Cleanser",
+    "price": 13.68,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "breakouts",
+      "texture"
+    ],
+    "tags": [
+      "fragrance-free",
+      "oil-control"
+    ],
+    "retailers": [
+      "Target",
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Walmart / Ulta",
+    "url": "https://www.ulta.com/p/foaming-facial-cleanser-xlsImpprod5140065",
+    "image": "https://assets.syndigo.cloud/cdn/a7dfe6ac-2b41-4cdc-b107-e29eac2e7c90/fileType_jpg%3Bsize_600x600/a7dfe6ac-2b41-4cdc-b107-e29eac2e7c90",
+    "note": "Foaming cleanser suited to normal-to-oily skin."
+  },
+  {
+    "id": "vanicream-cleanser",
+    "brand": "Vanicream",
+    "category": "Cleanser",
+    "name": "Gentle Facial Cleanser",
+    "price": 9.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "sensitivity",
+      "dryness",
+      "breakouts"
+    ],
+    "tags": [
+      "sensitive-skin",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-17425434",
+    "image": "https://beautycove.ng/image/cache/catalog/vanicream-gentle-facial-cleanser-530x663.jpg",
+    "note": "Simple cleanser option when sensitivity is a priority."
+  },
+  {
+    "id": "ordinary-niacinamide",
+    "brand": "The Ordinary",
+    "category": "Serum",
+    "name": "Niacinamide 10% + Zinc 1%",
+    "price": 6,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "breakouts",
+      "texture",
+      "uneven-tone"
+    ],
+    "tags": [
+      "budget-pick",
+      "blemish-prone"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "The Ordinary",
+    "url": "https://theordinary.com/en-us/niacinamide-10-zinc-1-serum-100436.html",
+    "image": "https://down-ph.img.susercontent.com/file/sg-11134207-7rcci-lt2ykrgif3jw5c",
+    "note": "Low-cost serum option often chosen for oiliness and blemish-prone skin."
+  },
+  {
+    "id": "ordinary-alpha",
+    "brand": "The Ordinary",
+    "category": "Serum",
+    "name": "Alpha Arbutin 2% + HA",
+    "price": 11.5,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dark-spots",
+      "uneven-tone"
+    ],
+    "tags": [
+      "dark-spots",
+      "all-skin-types"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/alpha-arbutin-2-hyaluronic-acid-hyperpigmentation-pimprod2007108",
+    "image": "https://eclatbody.com/cdn/shop/products/the-ordinary-alpha-arbutin-2-ha-serum-903705.jpg?v=1667900983",
+    "note": "Targeted serum choice when dark spots and uneven tone are priorities."
+  },
+  {
+    "id": "vanicream-moist",
+    "brand": "Vanicream",
+    "category": "Moisturizer",
+    "name": "Daily Facial Moisturizer",
+    "price": 13.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "sensitivity",
+      "dryness"
+    ],
+    "tags": [
+      "sensitive-skin",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Target",
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-80038093",
+    "image": "https://i5.walmartimages.com/asr/a3e98dac-0d20-4498-b2f0-b7dc2d839a24.2aec6ae896336e34e9ac4f2069e8befc.jpeg",
+    "note": "Lightweight moisturizer for day or night, including sensitive skin."
+  },
+  {
+    "id": "cerave-pm",
+    "brand": "CeraVe",
+    "category": "Moisturizer",
+    "name": "PM Facial Moisturizing Lotion",
+    "price": 14.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "night",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-13977966",
+    "image": "https://static.thcdn.com/productimg/original/12901352-9035306463314943.jpg",
+    "note": "Lightweight nighttime moisturizer."
+  },
+  {
+    "id": "elf-holy",
+    "brand": "e.l.f. SKIN",
+    "category": "Moisturizer",
+    "name": "Holy Hydration! Face Cream — Fragrance Free",
+    "price": 13,
+    "skins": [
+      "dry",
+      "balanced",
+      "combination"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "fragrance-free",
+      "richer-cream"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-76615253",
+    "image": "https://i5.walmartimages.com/asr/1221408d-1d4a-4a98-8480-6d07ddf1c611.d535615beee379045c4f6f10f9791d48.jpeg",
+    "note": "Affordable richer cream for hydration."
+  },
+  {
+    "id": "neutrogena-hydro",
+    "brand": "Neutrogena",
+    "category": "Moisturizer",
+    "name": "Hydro Boost Gel Cream — Fragrance Free",
+    "price": 19.99,
+    "skins": [
+      "dry",
+      "balanced",
+      "combination"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "fragrance-free",
+      "gel-cream"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-88452186",
+    "image": "https://euadmin.eurasiasupplies.com/storage/images/product/normal-st4S6NnWSmEbwEsuzsDQr6hMOgEhYw.jpg",
+    "note": "Light gel-cream option when hydration is wanted without a heavy feel."
+  },
+  {
+    "id": "lrp-matte",
+    "brand": "La Roche-Posay",
+    "category": "Moisturizer",
+    "name": "Toleriane Double Repair Matte Face Moisturizer",
+    "price": 24.99,
+    "skins": [
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "breakouts",
+      "sensitivity",
+      "texture"
+    ],
+    "tags": [
+      "matte",
+      "oil-free"
+    ],
+    "retailers": [
+      "Target",
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-83614227",
+    "image": "https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1663435274-2591830.png?crop=1xw%3A1.00xh%3Bcenter%2Ctop&resize=980%3A%2A",
+    "note": "Matte moisturizer option for oily or combination skin."
+  },
+  {
+    "id": "bgs30",
+    "brand": "Black Girl Sunscreen",
+    "category": "SPF",
+    "name": "Moisturizing Sunscreen Lotion SPF 30",
+    "price": 15.99,
+    "skins": [
+      "dry",
+      "balanced",
+      "combination"
+    ],
+    "concerns": [
+      "dark-spots",
+      "uneven-tone",
+      "dryness"
+    ],
+    "tags": [
+      "no-white-residue",
+      "melanin-friendly"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-76157877",
+    "image": "https://m.media-amazon.com/images/I/71l1M8wRoTL._SX679_.jpg",
+    "note": "Moisturizing SPF designed to avoid white residue."
+  },
+  {
+    "id": "bgsmatte",
+    "brand": "Black Girl Sunscreen",
+    "category": "SPF",
+    "name": "Make It Matte SPF 45",
+    "price": 17.99,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dark-spots",
+      "uneven-tone"
+    ],
+    "tags": [
+      "matte",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Target",
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-79494469",
+    "image": "https://discountstore.pk/cdn/shop/files/22033507_fpx_resized_1.webp?v=1760604182",
+    "note": "Matte sunscreen option made to work well under makeup."
+  },
+  {
+    "id": "elf-spf",
+    "brand": "e.l.f.",
+    "category": "SPF",
+    "name": "Suntouchable! Invisible Sunscreen SPF 35",
+    "price": 15,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dark-spots",
+      "uneven-tone"
+    ],
+    "tags": [
+      "invisible-finish",
+      "under-makeup"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/suntouchable-invisible-sunscreen-spf-35-pimprod2039942",
+    "image": "https://m.media-amazon.com/images/I/61ZINvm4jKL._AC_.jpg",
+    "note": "Affordable invisible-finish sunscreen designed to sit under makeup."
+  },
+  {
+    "id": "neutrogena-spf50",
+    "brand": "Neutrogena",
+    "category": "SPF",
+    "name": "Hydro Boost Facial Moisturizer SPF 50",
+    "price": 19.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dryness",
+      "dark-spots"
+    ],
+    "tags": [
+      "spf50",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-83470772",
+    "image": "https://www.r9farmacia.com/8150-thickbox_default/neutrogena-hydro-boost-fluido-hidratante-spf-50-1-envase-50-ml.jpg",
+    "note": "Hydrating fragrance-free SPF 50 option."
+  },
+  {
+    "id": "elf-eye-cream",
+    "brand": "e.l.f. SKIN",
+    "category": "Eye Cream",
+    "name": "Holy Hydration! Illuminating Eye Cream",
+    "price": 11,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dryness",
+      "dark-spots"
+    ],
+    "tags": [
+      "eye-care",
+      "hydrating"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/holy-hydration-illuminating-eye-cream-xlsImpprod14481073?sku=2500313",
+    "image": "https://incidecoder-content.storage.googleapis.com/52b82dcf-0cdd-4f66-97fb-d767c342af07/products/e-l-f-holy-hydration-illuminating-eye-cream/e-l-f-holy-hydration-illuminating-eye-cream_front_photo_original.jpeg",
+    "note": "Hydrating eye cream aimed at dullness, dark-circle appearance and the delicate under-eye area."
+  },
+  {
+    "id": "neutrogena-eye",
+    "brand": "Neutrogena",
+    "category": "Eye Cream",
+    "name": "Hydro Boost Under Eye Gel Cream",
+    "price": 19.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dryness",
+      "sensitivity"
+    ],
+    "tags": [
+      "eye-care",
+      "fragrance-free",
+      "hyaluronic-acid"
+    ],
+    "retailers": [
+      "Target",
+      "Anywhere"
+    ],
+    "source": "Target",
+    "url": "https://www.target.com/p/-/A-16600135",
+    "image": "https://www.thaqafnafsak.com/wp-content/uploads/2021/07/Neutrogena-Hydro-Boost-Eye-Gel-Cream-1024x1024.jpg",
+    "note": "Fragrance-free hyaluronic-acid eye gel-cream for hydration around the eye area."
+  },
+  {
+    "id": "cerave-eye",
+    "brand": "CeraVe",
+    "category": "Eye Cream",
+    "name": "Eye Repair Cream",
+    "price": 19.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [
+      "dark-spots",
+      "sensitivity",
+      "dryness"
+    ],
+    "tags": [
+      "eye-care",
+      "fragrance-free"
+    ],
+    "retailers": [
+      "Anywhere"
+    ],
+    "source": "CeraVe",
+    "url": "https://www.cerave.com/en-us/skincare/moisturizers/eye-repair-cream",
+    "image": "https://summerhillpharmacydublin.ie/cdn/shop/files/eye-repair-cream-front-CeraVe-14mls.webp?v=1777991673&width=416",
+    "note": "Ophthalmologist-tested eye cream focused on the appearance of dark circles and puffiness."
+  },
+  {
+    "id": "elf-bite-shadow",
+    "brand": "e.l.f.",
+    "category": "Eyeshadow",
+    "name": "Bite Size Eyeshadow Palette",
+    "price": 4,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "budget",
+      "palette"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/bite-size-eyeshadow-palette-pimprod2013931",
+    "image": "https://media.douglas.nl/medias/cosbkc652119-0-dgl-NL.jpg?context=bWFzdGVyfGltYWdlc3w1NzE1NHxpbWFnZS9qcGVnfGFHWXlMMmhtWVM4eE1URTBOakk1TURZNU1qRXlOaTlqYjNOaWEyTTJOVEl4TVRsZk1GOWtaMnd0VGt3dWFuQm58Y2YxN2Q2YzJlODY5Nzk4ZDBmMTY5OTNhNTMxMmI3ODQ0OTFlNWJiYjViYzI3MTZiNmNjZDVhMTczNTE3MmQ2MQ&grid=true",
+    "note": "Four-shade compact palette with matte and shimmer options at a low price."
+  },
+  {
+    "id": "elf-perfect10",
+    "brand": "e.l.f.",
+    "category": "Eyeshadow",
+    "name": "Perfect 10 Eyeshadow Palette",
+    "price": 11,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "10-shades",
+      "palette"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/perfect-10-eyeshadow-palette-pimprod2040025",
+    "image": "https://i5.walmartimages.com/asr/62691a8b-8046-4a4a-93ed-9cda36e97fc5.db8de3b915d02bc52ac70108dba8ec4d.jpeg?odnBg=FFFFFF&odnHeight=612&odnWidth=612",
+    "note": "Ten-shade palette for users who want more eye-look variety."
+  },
+  {
+    "id": "elf-liquid-shadow",
+    "brand": "e.l.f.",
+    "category": "Eyeshadow",
+    "name": "Liquid Velvet Eyeshadow",
+    "price": 8,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "matte",
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "liquid-shadow",
+      "long-wear"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/liquid-velvet-eyeshadow-pimprod2056279",
+    "image": "https://i5.walmartimages.com/seo/e-l-f-Liquid-Velvet-Eyeshadow-Currant-Mood-0-15oz_e79413a1-e3e0-4619-8a47-11237c157a89.5ef3d2121150e697596c21f2d6703a6a.jpeg",
+    "note": "One-swipe liquid-to-powder eyeshadow for a simpler eye look."
+  },
+  {
+    "id": "elf-no-budge",
+    "brand": "e.l.f.",
+    "category": "Eyeliner",
+    "name": "No Budge Retractable Eyeliner",
+    "price": 6,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "pencil",
+      "budget"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/no-budge-retractable-eyeliner-pimprod2003090",
+    "image": "https://www.gosupps.com/media/catalog/product/cache/25/small_image/1500x1650/9df78eab33525d08d6e5fb8d27136e95/5/1/51iP_Zi8O5L.jpg",
+    "note": "Retractable pencil eyeliner with a smudge-resistant matte finish."
+  },
+  {
+    "id": "nyx-epic-ink",
+    "brand": "NYX Professional Makeup",
+    "category": "Eyeliner",
+    "name": "Epic Ink Waterproof Liquid Eyeliner",
+    "price": 10,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "liquid-liner",
+      "waterproof"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/epic-ink-waterproof-liquid-eyeliner-xlsImpprod15361071",
+    "image": "https://i.ebayimg.com/images/g/GdEAAOSwq3hmRFou/s-l1200.jpg",
+    "note": "Waterproof liquid liner with a flexible tip for thin or winged lines."
+  },
+  {
+    "id": "maybelline-tattoo",
+    "brand": "Maybelline",
+    "category": "Eyeliner",
+    "name": "Tattoo Studio Sharpenable Gel Pencil Eyeliner",
+    "price": 11.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "matte",
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "eye-makeup",
+      "gel-pencil",
+      "waterproof"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/tattoo-studio-sharpenable-gel-pencil-eyeliner-pimprod2002765",
+    "image": "https://media.ulta.com/i/ulta/2596458?fmt=auto&h=800&w=800",
+    "note": "Long-wear gel pencil available in multiple colors."
+  },
+  {
+    "id": "elf-grip",
+    "brand": "e.l.f.",
+    "category": "Primer",
+    "name": "Power Grip Primer",
+    "price": 11,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "no-preference"
+    ],
+    "tags": [
+      "gripping",
+      "hydrating"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/power-grip-primer-pimprod2030073",
+    "image": "https://digital.loblaws.ca/PCX/21418063_EA/en/1/60933282846_enfr_front_centre_marketing_GS1_Ecommerce_800.png",
+    "note": "Hydrating grip primer for longer makeup wear."
+  },
+  {
+    "id": "elf-grip-matte",
+    "brand": "e.l.f.",
+    "category": "Primer",
+    "name": "Power Grip Matte Primer",
+    "price": 11,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced",
+      "dry"
+    ],
+    "concerns": [],
+    "finishes": [
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "matte",
+      "gripping"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/power-grip-matte-primer-pimprod2049695",
+    "image": "https://digital.loblaws.ca/PCX/21418063_EA/en/1/60933282846_enfr_front_centre_marketing_GS1_Ecommerce_800.png",
+    "note": "Matte grip primer for users who want less shine."
+  },
+  {
+    "id": "maybelline-fitme",
+    "brand": "Maybelline",
+    "category": "Complexion",
+    "name": "Fit Me Matte + Poreless Liquid Foundation",
+    "price": 11.99,
+    "skins": [
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "matte",
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "medium-coverage",
+      "budget"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/fit-me-matte-poreless-liquid-foundation-xlsImpprod11861007",
+    "image": "https://www.bigw.com.au/medias/sys_master/images/images/h5b/h5c/79247620341790.jpg",
+    "note": "Budget-friendly matte foundation with a broad shade assortment."
+  },
+  {
+    "id": "loreal-true",
+    "brand": "L'Oréal",
+    "category": "Complexion",
+    "name": "True Match Super-Blendable Foundation",
+    "price": 13.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "natural-finish",
+      "undertone-system"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/true-match-super-blendable-foundation-pimprod2034733",
+    "image": "https://anytimemakeup.com.au/cdn/shop/files/L-Oreal-True-Match-Foundation-Main.png?v=1728346436",
+    "note": "Natural-finish foundation organized around undertone families."
+  },
+  {
+    "id": "elf-halo",
+    "brand": "e.l.f.",
+    "category": "Complexion",
+    "name": "Halo Glow Liquid Filter",
+    "price": 15,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "dewy",
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "glowy",
+      "light-coverage"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/halo-glow-liquid-filter-pimprod2036949",
+    "image": "https://homebird.mx/cdn/shop/products/e.l.f-halo-glow.jpg?v=1660860970&width=416",
+    "note": "Glow-focused complexion product for radiant, lighter coverage."
+  },
+  {
+    "id": "fenty-eaze",
+    "brand": "Fenty Beauty",
+    "category": "Complexion",
+    "name": "Eaze Drop Blurring Skin Tint",
+    "price": 41,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "skin-tint",
+      "light-coverage"
+    ],
+    "retailers": [
+      "Sephora",
+      "Anywhere"
+    ],
+    "source": "Sephora",
+    "url": "https://www.sephora.com/product/fenty-beauty-rihanna-eaze-drop-blurring-skin-tint-P470025",
+    "image": "https://s.cdnsbn.com/images/products/l/26936279102-1.jpg",
+    "note": "Premium lightweight tint with buildable light coverage and natural finish."
+  },
+  {
+    "id": "elf-camo",
+    "brand": "e.l.f.",
+    "category": "Concealer",
+    "name": "Hydrating Camo Concealer",
+    "price": 8,
+    "skins": [
+      "dry",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "no-preference"
+    ],
+    "tags": [
+      "full-coverage",
+      "satin"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/hydrating-camo-concealer-pimprod2013395",
+    "image": "https://damarbeauty.com/cdn/shop/files/61zmdUtnrcL.jpg?v=1692209568",
+    "note": "Low-cost satin-finish concealer with fuller coverage."
+  },
+  {
+    "id": "nyx-bare",
+    "brand": "NYX Professional Makeup",
+    "category": "Concealer",
+    "name": "Bare With Me Concealer Serum",
+    "price": 12,
+    "skins": [
+      "dry",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "no-preference"
+    ],
+    "tags": [
+      "hydrating",
+      "medium-coverage"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/bare-with-me-hydrating-face-body-concealer-serum-pimprod2028567",
+    "image": "https://prod.cdn.plein.nl/producten/1000x1000/1095973.jpg",
+    "note": "Hydrating medium-coverage concealer serum."
+  },
+  {
+    "id": "elf-powder",
+    "brand": "e.l.f.",
+    "category": "Powder",
+    "name": "Halo Glow Setting Powder",
+    "price": 8,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "no-preference"
+    ],
+    "tags": [
+      "setting-powder",
+      "soft-glow"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/halo-glow-setting-powder-pimprod2020785",
+    "image": "https://beautyincabo.com.mx/cdn/shop/products/83393_OpenA_R.jpg?v=1691872861",
+    "note": "Affordable setting powder with a soft glow."
+  },
+  {
+    "id": "rare-blush",
+    "brand": "Rare Beauty",
+    "category": "Blush",
+    "name": "Soft Pinch Liquid Blush",
+    "price": 25,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "pigmented",
+      "all-skin-tones"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/soft-pinch-liquid-blush-pimprod2055883",
+    "image": "https://volaremakeup.com/cdn/shop/files/s2911741-main-zoom.webp?v=1760351496&width=1400",
+    "note": "Highly pigmented liquid blush available in both dewy and matte shades."
+  },
+  {
+    "id": "juvia-blush",
+    "brand": "Juvia's Place",
+    "category": "Blush",
+    "name": "Blushed Liquid Blush",
+    "price": 20,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "dewy",
+      "natural",
+      "no-preference"
+    ],
+    "tags": [
+      "pigmented",
+      "deeper-tone-friendly"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/blushed-liquid-blush-pimprod2038948",
+    "image": "https://cdn11.bigcommerce.com/s-ilgxsy4t82/images/stencil/1280x1280/products/395777/1500566/41JwHgLwDHL__32511.1775298418.jpg?c=1&imbypass=on",
+    "note": "Vivid, highly pigmented liquid blush with shades that can show strongly on deeper complexions."
+  },
+  {
+    "id": "skyhigh",
+    "brand": "Maybelline",
+    "category": "Mascara",
+    "name": "Lash Sensational Sky High Mascara",
+    "price": 13.99,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "lengthening",
+      "washable"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/lash-sensational-sky-high-mascara-pimprod2020260",
+    "image": "https://i.makeupshop.nl/600x600/ry3ymiabjler.jpg",
+    "note": "Lengthening mascara with a flexible brush."
+  },
+  {
+    "id": "nyx-brow",
+    "brand": "NYX Professional Makeup",
+    "category": "Brow",
+    "name": "Control Freak Clear Eyebrow Gel",
+    "price": 8,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "matte",
+      "no-preference"
+    ],
+    "tags": [
+      "clear-gel",
+      "brow-hold"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/control-freak-clear-eyebrow-gel-xlsImpprod6380161",
+    "image": "https://www.druni.es/media/catalog/product/2/7/2716446.jpg?canvas=700%3A700&fit=bounds&height=700&quality=80&width=700",
+    "note": "Clear brow gel for a simple everyday brow hold."
+  },
+  {
+    "id": "nyx-butter",
+    "brand": "NYX Professional Makeup",
+    "category": "Lip",
+    "name": "Butter Gloss",
+    "price": 6,
+    "skins": [
+      "dry",
+      "oily",
+      "combination",
+      "balanced"
+    ],
+    "concerns": [],
+    "finishes": [
+      "natural",
+      "dewy",
+      "no-preference"
+    ],
+    "tags": [
+      "gloss",
+      "budget"
+    ],
+    "retailers": [
+      "Ulta",
+      "Anywhere"
+    ],
+    "source": "Ulta",
+    "url": "https://www.ulta.com/p/butter-gloss-non-sticky-lip-gloss-xlsImpprod5050009",
+    "image": "https://i.makeup.cz/f/fz/fzaefed3cctk.jpg",
+    "note": "Affordable glossy lip option with many shade choices."
+  }
+];
+
+</script>
+<script>
+const products = window.BEAUTRES_PRODUCTS || [];
+const catalogLoaded = products.length > 0;
+
+
+const APPROVED_SHOP_DOMAINS=["www.target.com","www.ulta.com","www.sephora.com","theordinary.com","www.cerave.com"];
+function isApprovedShopUrl(url){
+  try{return APPROVED_SHOP_DOMAINS.includes(new URL(url).hostname)}catch(e){return false}
+}
+
+let currentStep=1;
+let selectedByCategory={};
+let currentProfile=null;
+let currentOptions={};
+
+const stepNames=["Goal","Skin","Complexion","Preferences","Budget"];
+const form=document.getElementById("beautyForm");
+const hero=document.getElementById("hero");
+const quizPanel=document.getElementById("quizPanel");
+const results=document.getElementById("results");
+
+function cap(v){return (v||"").replaceAll("-"," ").replace(/\b\w/g,m=>m.toUpperCase())}
+function inferSkin(afterWash,midday){
+  if(afterWash==="tight" || midday==="dry") return "dry";
+  if(afterWash==="mixed" || midday==="tzone") return "combination";
+  if(afterWash==="shiny" || midday==="oily") return "oily";
+  return "balanced";
+}
+function getProfile(){
+  const fd=new FormData(form);
+  return {
+    mode:fd.get("mode"),
+    skinFocus:fd.getAll("skinFocus"),
+    makeupFocus:fd.getAll("makeupFocus"),
+    routineTime:fd.get("routineTime"),
+    routineSize:fd.get("routineSize"),
+    afterWash:fd.get("afterWash"),
+    midday:fd.get("midday"),
+    skinType:inferSkin(fd.get("afterWash"),fd.get("midday")),
+    concerns:fd.getAll("concerns"),
+    preferences:fd.getAll("preferences"),
+    tone:fd.get("tone"),
+    undertone:fd.get("undertone"),
+    finish:fd.get("finish"),
+    retailers:fd.getAll("retailers"),
+    budget:Number(fd.get("budget"))
+  }
+}
+function categoriesFor(p){
+  const defaultSkin = p.routineTime==="night"
+    ? ["Cleanser","Serum","Moisturizer"]
+    : ["Cleanser","Serum","Moisturizer","SPF"];
+
+  const skinMap={
+    "eye-care":["Eye Cream"],
+    "cleanser":["Cleanser"],
+    "treatments":["Serum"],
+    "moisturizer":["Moisturizer"],
+    "spf":p.routineTime==="night"?[]:["SPF"]
+  };
+  const makeupMap={
+    "face":["Primer","Complexion","Concealer","Powder","Blush"],
+    "eyes":["Eyeshadow","Eyeliner","Mascara"],
+    "brows":["Brow"],
+    "lips":["Lip"]
+  };
+
+  let skin=[];
+  let makeup=[];
+
+  const sf=p.skinFocus||[];
+  const mf=p.makeupFocus||[];
+
+  if(sf.includes("full") || (!sf.length && ["skincare","both","unsure"].includes(p.mode))){
+    skin=[...defaultSkin];
+    if(p.routineSize==="full") skin.splice(Math.max(1,skin.length-1),0,"Eye Cream");
+  }else{
+    sf.forEach(k=>{if(skinMap[k]) skin.push(...skinMap[k])});
+  }
+
+  if(mf.includes("full") || (!mf.length && ["makeup","both"].includes(p.mode))){
+    makeup=p.routineSize==="essentials"
+      ? ["Complexion","Blush","Mascara","Lip"]
+      : p.routineSize==="balanced"
+        ? ["Primer","Complexion","Concealer","Blush","Eyeshadow","Mascara","Lip"]
+        : ["Primer","Complexion","Concealer","Powder","Blush","Eyeshadow","Eyeliner","Brow","Mascara","Lip"];
+  }else{
+    mf.forEach(k=>{if(makeupMap[k]) makeup.push(...makeupMap[k])});
+  }
+
+  if(p.mode==="skincare") return [...new Set(skin)];
+  if(p.mode==="makeup") return [...new Set(makeup)];
+  if(p.mode==="both") return [...new Set([...skin,...makeup])];
+
+  // "Help me choose": intentionally small and easy.
+  if(!skin.length) skin=["Cleanser","Moisturizer"].concat(p.routineTime==="night"?[]:["SPF"]);
+  if(!makeup.length) makeup=["Complexion","Mascara","Lip"];
+  return [...new Set([...skin,...makeup])];
+}
+function retailerMatch(prod,p){
+  return !p.retailers.length || p.retailers.includes("Anywhere") || prod.retailers.some(r=>p.retailers.includes(r));
+}
+function score(prod,p){
+  let s=0;
+  if(prod.skins.includes(p.skinType)) s+=4;
+  p.concerns.forEach(c=>{if(prod.concerns.includes(c)) s+=2});
+  if(prod.finishes && prod.finishes.includes(p.finish)) s+=2;
+  if(retailerMatch(prod,p)) s+=2;
+  if(p.preferences.includes("fragrance-free") && prod.tags.includes("fragrance-free")) s+=2.5;
+  if(p.preferences.includes("sensitive-friendly") && (prod.tags.includes("sensitive-skin")||prod.tags.includes("fragrance-free"))) s+=2;
+  if((p.tone==="deep"||p.tone==="rich-deep") && (prod.tags.includes("deeper-tone-friendly")||prod.tags.includes("melanin-friendly"))) s+=2;
+  if(p.routineTime==="night" && (prod.tags.includes("night")||prod.tags.includes("gripping")||prod.tags.includes("matte"))) s+=1;
+  if(p.routineTime==="morning" && (prod.category==="SPF"||prod.tags.includes("natural-finish")||prod.tags.includes("under-makeup"))) s+=1;
+  return s;
+}
+function getOptions(p){
+  const cats=categoriesFor(p);
+  const out={};
+  cats.forEach(cat=>{
+    out[cat]=products.filter(x=>x.category===cat)
+      .map(x=>({prod:x,score:score(x,p)}))
+      .sort((a,b)=>b.score-a.score || a.prod.price-b.prod.price)
+      .slice(0,3).map(x=>x.prod);
+  });
+  return out;
+}
+function chooseDefaults(p,opts){
+  selectedByCategory={};
+  let spent=0;
+  Object.entries(opts).forEach(([cat,arr])=>{
+    if(!arr.length)return;
+    let pick=arr[0];
+    if(p.budget<999){
+      const within=arr.find(x=>spent+x.price<=p.budget);
+      if(within) pick=within;
+      else return;
+    }
+    selectedByCategory[cat]=pick.id;
+    spent+=pick.price;
+  });
+}
+function selectedProducts(){
+  return Object.entries(selectedByCategory).map(([cat,id])=>products.find(p=>p.id===id)).filter(Boolean);
+}
+function totalSelected(){return selectedProducts().reduce((s,p)=>s+p.price,0)}
+function shadeText(prod,p){
+  if(!["Complexion","Concealer","Blush"].includes(prod.category))return "";
+  if(prod.category==="Blush"){
+    const fam=p.undertone==="cool"?"rose, berry or mauve":
+      p.undertone==="warm"?"peach, coral, terracotta or warm berry":
+      p.undertone==="olive"?"terracotta, warm rose or muted berry":
+      "rose, berry, peach or terracotta";
+    return `Color direction: ${fam}.`;
+  }
+  return `Shade direction: ${cap(p.tone)} depth + ${cap(p.undertone)} undertone. Verify exact shade before buying.`;
+}
+function why(prod,p){
+  const r=[];
+  if(prod.skins.includes(p.skinType))r.push(`${p.skinType} skin`);
+  const cs=p.concerns.filter(c=>prod.concerns.includes(c)).slice(0,2);
+  if(cs.length)r.push(cs.map(cap).join(" + "));
+  if(prod.finishes&&prod.finishes.includes(p.finish)&&p.finish!=="no-preference")r.push(`${cap(p.finish)} finish`);
+  if(retailerMatch(prod,p)&&p.retailers.length&&!p.retailers.includes("Anywhere"))r.push(`available through ${prod.source}`);
+  return r.length?`Matched for ${r.join(", ")}.`:prod.note;
+}
+function routineGuide(p){
+  let lines=[];
+  const cats=Object.keys(currentOptions);
+  const has=c=>cats.includes(c);
+
+  if(["skincare","both","unsure"].includes(p.mode)){
+    if(p.routineTime==="morning"||p.routineTime==="both"){
+      const am=["Cleanser","Serum","Eye Cream","Moisturizer","SPF"].filter(has).map(x=>x==="SPF"?"SPF last":x.toLowerCase());
+      if(am.length)lines.push(`<strong>Morning skincare:</strong> ${am.join(" → ")}`);
+    }
+    if(p.routineTime==="night"||p.routineTime==="both"){
+      const pm=["Cleanser","Serum","Eye Cream","Moisturizer"].filter(has).map(x=>x.toLowerCase());
+      if(pm.length)lines.push(`<strong>Night skincare:</strong> ${pm.join(" → ")}`);
+    }
+  }
+  if(["makeup","both","unsure"].includes(p.mode)){
+    const order=["Primer","Complexion","Concealer","Powder","Blush","Eyeshadow","Eyeliner","Brow","Mascara","Lip"].filter(has).map(x=>x.toLowerCase());
+    if(order.length)lines.push(`<strong>${p.routineTime==="night"?"Evening makeup":"Makeup"}:</strong> ${order.join(" → ")}`);
+  }
+  return lines.join("<br>");
+}
+
+let productHealth={};
+
+function healthClass(status){
+  if(["ok","redirected"].includes(status)) return "ok";
+  if(["restricted","reviewed"].includes(status)) return "warn";
+  if(["broken","bad_domain","invalid_url"].includes(status)) return "bad";
+  return "neutral";
+}
+function healthText(record){
+  if(!record) return "Approved retailer/brand destination • live monitoring activates when hosted";
+  const date=record.checked_at ? new Date(record.checked_at).toLocaleDateString() : "unknown date";
+  if(record.status==="ok") return `Link working • checked ${date}`;
+  if(record.status==="redirected") return `Link working after retailer redirect • checked ${date}`;
+  if(record.status==="restricted") return `Approved retailer • automated check blocked by retailer • ${date}`;
+  if(record.status==="broken") return `Possible broken product link • checked ${date}`;
+  if(record.status==="bad_domain") return `Blocked: destination is not an approved retailer`;
+  if(record.status==="reviewed") return `Approved destination • manual review ${date}`;
+  return `Link status: ${record.status || "unknown"} • ${date}`;
+}
+function paintHealth(){
+  document.querySelectorAll("[data-health]").forEach(el=>{
+    const record=productHealth[el.dataset.health];
+    el.className=`link-health ${healthClass(record?.status)}`;
+    el.textContent=healthText(record);
+  });
+}
+async function loadProductHealth(){
+  if(location.protocol==="file:"){
+    paintHealth();
+    return;
+  }
+  try{
+    const res=await fetch(`product-status.json?v=${Date.now()}`,{cache:"no-store"});
+    if(!res.ok) throw new Error("status file unavailable");
+    productHealth=await res.json();
+  }catch(e){
+    productHealth={};
+  }
+  paintHealth();
+}
+
+function renderProducts(p){
+  const host=document.getElementById("categoryResults");
+  host.innerHTML="";
+  Object.entries(currentOptions).forEach(([cat,arr])=>{
+    if(!arr.length)return;
+    const block=document.createElement("section");
+    block.className="category-block";
+    block.innerHTML=`
+      <div class="category-head">
+        <div><h3>${cat}</h3><p>Choose one — ${arr.length} matched option${arr.length===1?"":"s"}</p></div>
+      </div>
+      <div class="product-row">
+        ${arr.map((prod,i)=>{
+          const sel=selectedByCategory[cat]===prod.id;
+          const img=prod.image
+            ? `<img src="${prod.image}" alt="${prod.brand} ${prod.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="imgfallback" style="display:none;font-family:inherit;font-size:12px;text-align:center;padding:20px;color:#8d7e84">Product photo<br>temporarily unavailable</div>`
+            : `<div class="imgfallback" style="font-family:inherit;font-size:12px;text-align:center;padding:20px;color:#8d7e84">Product photo<br>temporarily unavailable</div>`;
+          return `
+          <article class="product ${sel?"selected":""}" data-card="${prod.id}">
+            ${i===0?`<span class="best">Top match</span>`:""}
+            <div class="imgwrap">${img}</div>
+            <div class="product-top"><span class="category">${cat}</span><span class="price">$${prod.price.toFixed(2)}</span></div>
+            <div class="brandname">${prod.brand}</div>
+            <h4>${prod.name}</h4>
+            <div class="tags">${prod.tags.slice(0,3).map(t=>`<span class="tag">${cap(t)}</span>`).join("")}</div>
+            ${shadeText(prod,p)?`<div class="shade">${shadeText(prod,p)}</div>`:""}
+            <div class="why"><strong>Why it fits:</strong> ${why(prod,p)}<br><br>${prod.note}</div>
+            <div class="card-actions">
+              <button type="button" class="select-btn ${sel?"chosen":""}" data-select="${prod.id}" data-category="${cat}">${sel?"Selected ✓":"Choose this"}</button>
+              ${isApprovedShopUrl(prod.url)?`<a class="shop" href="${prod.url}" target="_blank" rel="noopener noreferrer">View at ${prod.source}</a>`:`<span class="shop" style="opacity:.5">Link unavailable</span>`}
+              <button type="button" class="own" data-own="${prod.id}">I own this</button>
+            </div>
+            <div class="link-health neutral" data-health="${prod.id}">Approved destination • last manual review Sept. 7, 2026</div><div class="source">Price and availability can still change.</div>
+          </article>`;
+        }).join("")}
+      </div>`;
+    host.appendChild(block);
+  });
+  restoreOwned();
+  paintHealth();
+}
+function updateTotal(){
+  const total=totalSelected();
+  document.getElementById("totalPrice").textContent=`$${total.toFixed(2)}`;
+  const msg=document.getElementById("budgetMsg");
+  if(!currentProfile){msg.textContent="";return}
+  if(currentProfile.budget>=999)msg.textContent="No set budget";
+  else if(total<=currentProfile.budget)msg.textContent=`$${(currentProfile.budget-total).toFixed(2)} left in your $${currentProfile.budget} budget`;
+  else msg.textContent=`$${(total-currentProfile.budget).toFixed(2)} over your $${currentProfile.budget} budget`;
+}
+function showQuiz(){
+  hero.classList.add("hidden");results.classList.add("hidden");quizPanel.classList.remove("hidden");
+  updateStep();window.scrollTo({top:0,behavior:"smooth"});
+}
+function updateStep(){
+  document.querySelectorAll(".step").forEach(x=>x.classList.toggle("active",Number(x.dataset.step)===currentStep));
+  document.getElementById("stepCount").textContent=`${currentStep} of 5`;
+  document.getElementById("stepName").textContent=stepNames[currentStep-1];
+  document.getElementById("bar").style.width=`${currentStep*20}%`;
+  document.getElementById("backBtn").style.visibility=currentStep===1?"hidden":"visible";
+  document.getElementById("nextBtn").textContent=currentStep===5?"Show my choices →":"Next →";
+}
+function validateStep(){
+  const active=document.querySelector(`.step[data-step="${currentStep}"]`);
+  const checked=new Set();
+  for(const el of active.querySelectorAll("[required]")){
+    if(el.type==="radio"){
+      if(checked.has(el.name))continue;
+      checked.add(el.name);
+      if(!active.querySelector(`[name="${el.name}"]:checked`)){alert("Please answer the required question first.");return false}
+    }else if(!el.value){alert("Please answer the required question first.");return false}
+  }
+  return true
+}
+function renderResults(p){
+  currentProfile=p;
+  if(!catalogLoaded){
+    quizPanel.classList.add("hidden");
+    hero.classList.add("hidden");
+    results.classList.remove("hidden");
+    document.getElementById("profileLine").textContent = "Your answers were saved, but the product catalog did not load.";
+    document.getElementById("totalPrice").textContent = "$0.00";
+    document.getElementById("budgetMsg").textContent = "";
+    document.getElementById("routineGuide").innerHTML = `<strong>Products could not load</strong><p>Please reopen the full Beauty Match Beta file or refresh the hosted site. Your quiz is not the problem.</p>`;
+    document.getElementById("categoryResults").innerHTML = `<div class="tip"><strong>Catalog loading error:</strong> Beauty Match Beta could not access its product list. This version now reports the error instead of showing an unexplained empty page.</div>`;
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+  currentOptions=getOptions(p);
+  chooseDefaults(p,currentOptions);
+
+  quizPanel.classList.add("hidden");hero.classList.add("hidden");results.classList.remove("hidden");
+  document.getElementById("profileLine").textContent=
+    `${cap(p.routineTime)} • ${cap(p.routineSize)} • ${cap(p.skinType)} skin • ${cap(p.tone)} tone • ${cap(p.undertone)} undertone`;
+  document.getElementById("routineGuide").innerHTML=`<strong>Suggested order</strong><p>${routineGuide(p)}</p>`;
+  renderProducts(p);updateTotal();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function ownedSet(){
+  try{return new Set(JSON.parse(localStorage.getItem("beautyMatchBetaOwnedV1")||"[]"))}catch(e){return new Set()}
+}
+function restoreOwned(){
+  const own=ownedSet();
+  document.querySelectorAll("[data-own]").forEach(btn=>{
+    const yes=own.has(btn.dataset.own);
+    btn.classList.toggle("active",yes);
+    btn.textContent=yes?"In my bag ✓":"I own this";
+  });
+}
+function resultsText(){
+  if(!currentProfile)return "";
+  const p=currentProfile;
+  const list=selectedProducts().map(x=>`${x.category}: ${x.brand} ${x.name} — $${x.price.toFixed(2)} — ${x.url}`);
+  return `My Beauty Match Beta Edit
+Routine: ${cap(p.routineTime)} / ${cap(p.routineSize)}
+Skin: ${cap(p.skinType)}
+Complexion: ${cap(p.tone)} / ${cap(p.undertone)}
+Selected total: $${totalSelected().toFixed(2)}
+
+${list.join("\n")}
+
+Product prices and availability can change. Verify exact shades and current ingredients before purchase.`;
+}
+function applyProfile(p){
+  form.reset();
+  Object.entries(p).forEach(([k,v])=>{
+    if(Array.isArray(v)){
+      v.forEach(val=>{
+        const el=form.querySelector(`[name="${k}"][value="${CSS.escape(val)}"]`);
+        if(el)el.checked=true;
+      });
+    }else{
+      const el=form.querySelector(`[name="${k}"][value="${CSS.escape(String(v))}"]`);
+      if(el&&(el.type==="radio"||el.type==="checkbox"))el.checked=true;
+      const sel=form.querySelector(`select[name="${k}"]`);
+      if(sel)sel.value=String(v);
+    }
+  });
+}
+
+
+function updateFocusUI(){
+  const mode=form.querySelector('input[name="mode"]:checked')?.value;
+  const q=document.getElementById("focusQuestion");
+  const skin=document.getElementById("skinFocus");
+  const makeup=document.getElementById("makeupFocus");
+  const finishQ=document.getElementById("makeupFinishQuestion");
+
+  if(!mode){
+    q?.classList.add("hidden");
+    skin?.classList.add("hidden");
+    makeup?.classList.add("hidden");
+    return;
+  }
+
+  q?.classList.remove("hidden");
+  skin?.classList.toggle("hidden", !["skincare","both","unsure"].includes(mode));
+  makeup?.classList.toggle("hidden", !["makeup","both","unsure"].includes(mode));
+  if(finishQ) finishQ.classList.toggle("hidden", mode==="skincare");
+}
+form.querySelectorAll('input[name="mode"]').forEach(el=>el.addEventListener("change",updateFocusUI));
+
+loadProductHealth();
+document.getElementById("startBtn").onclick=showQuiz;
+document.getElementById("nextBtn").onclick=()=>{
+  if(!validateStep())return;
+  if(currentStep<5){currentStep++;updateStep()}else renderResults(getProfile());
+};
+document.getElementById("backBtn").onclick=()=>{if(currentStep>1){currentStep--;updateStep()}};
+
+document.addEventListener("click",e=>{
+  const select=e.target.closest("[data-select]");
+  if(select){
+    selectedByCategory[select.dataset.category]=select.dataset.select;
+    renderProducts(currentProfile);updateTotal();
+    return;
+  }
+  const own=e.target.closest("[data-own]");
+  if(own){
+    const set=ownedSet();
+    set.has(own.dataset.own)?set.delete(own.dataset.own):set.add(own.dataset.own);
+    localStorage.setItem("beautyMatchBetaOwnedV1",JSON.stringify([...set]));restoreOwned();
+  }
+});
+
+document.getElementById("saveLocal").onclick=()=>{
+  localStorage.setItem("beautyMatchBetaProfileV1",JSON.stringify(currentProfile));
+  localStorage.setItem("beautyMatchBetaSelectionsV1",JSON.stringify(selectedByCategory));
+  document.getElementById("resultMsg").textContent="Saved in Beauty Match Beta on this device.";
+};
+document.getElementById("loadBtn").onclick=()=>{
+  const raw=localStorage.getItem("beautyMatchBetaProfileV1");
+  if(!raw){document.getElementById("homeMsg").textContent="No saved Beauty Match Beta results yet.";return}
+  const p=JSON.parse(raw);applyProfile(p);updateFocusUI();renderResults(p);
+  try{
+    const saved=JSON.parse(localStorage.getItem("beautyMatchBetaSelectionsV1")||"{}");
+    Object.entries(saved).forEach(([cat,id])=>{if(currentOptions[cat]?.some(x=>x.id===id))selectedByCategory[cat]=id});
+    renderProducts(currentProfile);updateTotal();
+  }catch(e){}
+};
+document.getElementById("emailBtn").onclick=()=>{
+  const subject=encodeURIComponent("My Beauty Match Beta beauty routine");
+  const body=encodeURIComponent(resultsText());
+  location.href=`mailto:?subject=${subject}&body=${body}`;
+};
+document.getElementById("textBtn").onclick=()=>{
+  const body=encodeURIComponent(resultsText());
+  location.href=`sms:?&body=${body}`;
+};
+document.getElementById("shareBtn").onclick=async()=>{
+  if(navigator.share){
+    try{await navigator.share({title:"My Beauty Match Beta Edit",text:resultsText()})}
+    catch(e){}
+  }else{
+    try{await navigator.clipboard.writeText(resultsText());document.getElementById("resultMsg").textContent="Sharing isn't available here, so the list was copied instead."}
+    catch(e){document.getElementById("resultMsg").textContent="Sharing isn't available in this browser."}
+  }
+};
+document.getElementById("downloadBtn").onclick=()=>{
+  const blob=new Blob([resultsText()],{type:"text/plain"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="beauty-match-beta-routine.txt";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  document.getElementById("resultMsg").textContent="Routine downloaded.";
+};
+document.getElementById("copyBtn").onclick=async()=>{
+  try{await navigator.clipboard.writeText(resultsText());document.getElementById("resultMsg").textContent="Routine copied."}
+  catch(e){document.getElementById("resultMsg").textContent="Copy isn't supported in this browser."}
+};
+document.getElementById("resetTop").onclick=()=>{
+  form.reset();currentStep=1;currentProfile=null;currentOptions={};selectedByCategory={};
+  results.classList.add("hidden");quizPanel.classList.add("hidden");hero.classList.remove("hidden");updateStep();
+};
+</script>
+</body>
+</html>
